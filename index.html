@@ -22,7 +22,7 @@
   
     <h4>Maze generator</h4>
 
-    <form name="mazein" onsubmit="process(); return false;">
+    <form name="mazein">
       <table id="mazetable">
         <tr>
           <td>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
           <td>
-            algorithm: 
+            generation algorithm: 
             <br>
             <select name="algorithm">
               <option value="backtracker">Recursive Backtracker</option>
@@ -53,7 +53,8 @@
           <td>
             animate: <input name="animate" type="checkbox">
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input autofocus type="submit"> <input type="reset">
+            <input autofocus onclick="generate(); return false;" type="submit" value="generate"> 
+            <input disabled onclick="solve(); return false;"type="submit" id="solvebtn" value="solve"> 
           </td>
         </tr>
       </table>
@@ -63,16 +64,17 @@
     <div id="mazeout"></div>
     <canvas id="mazecanvas" width=0 height=0></canvas>
     
+    <script src="utility.js"></script>
     <script src="cell.js"></script>
     <script src="maze.js"></script>
-    <script src="backtracker.js"></script>
-    <script src="binarytree.js"></script>
-    <script src="prims.js"></script>
-    <script src="aldousbroder.js"></script>
-    <script src="wilsons.js"></script>
-    <script src="sidewinder.js"></script>
-    <script src="huntandkill.js"></script>
-    <script src="utility.js"></script>
+    <script src="generators/backtracker.js"></script>
+    <script src="generators/binarytree.js"></script>
+    <script src="generators/prims.js"></script>
+    <script src="generators/aldousbroder.js"></script>
+    <script src="generators/wilsons.js"></script>
+    <script src="generators/sidewinder.js"></script>
+    <script src="generators/huntandkill.js"></script>
+    <script src="solvers/dfs.js"></script>
     <script src="main.js"></script>
 
   </body>

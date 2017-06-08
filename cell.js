@@ -108,6 +108,21 @@ Cell.prototype.getRandNeighbors = function () {
 }; // end getRandNeighbor
 
 /**
+ * Returns an array of random linked neighbors or undefined if no neighbors
+ * @return array of random linked neighbors
+ */ 
+Cell.prototype.getLinkedRandNeighbors = function () {
+  let dirs = Object.keys(this.neighbors);
+  let linkedRandNeighbors = [];
+  for (let i = 0; i < dirs.length; i++) { 
+    if (this.links[dirs[i]]) {
+      linkedRandNeighbors.push(this.neighbors[dirs[i]]);
+    }
+  }
+  return linkedRandNeighbors;
+}; // end getRandNeighbor
+
+/**
  * Creates a copy of this cell
  * @return the copy cell
  */

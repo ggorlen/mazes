@@ -28,8 +28,11 @@ let maze;
 let animStates;
 let interval;
 
-// Processes the user's form submission
-function process() {
+// Processes the user's form submission to generate a maze
+function generate() {
+
+  // Disable "solve" button
+  document.getElementById("solvebtn").disabled = true;
   
   // Clear previous interval if active
   clearInterval(interval);
@@ -37,7 +40,7 @@ function process() {
   // Grab canvas and context from DOM
   canvas = document.getElementById("mazecanvas");
   ctx = canvas.getContext("2d");
-  
+
   // Collect info from form
   let userForm = document.forms["mazein"].elements;
   width = parseInt(userForm["width"].value) || 20;
@@ -73,14 +76,14 @@ function process() {
   //}
   
   // Add entrance and exit
-  //maze.grid[0][0].n = true;
-  //maze.grid[maze.height - 1][maze.width - 1].s = true;
+  maze.grid[0][0].links.n = true;
+  maze.grid[maze.height - 1][maze.width - 1].links.s = true;
   
   // Display maze, either as an animation or directly
   if (animate) {
     let cell;
     let cellClass;
-    interval = setInterval(function() {
+    interval = setInterval(function () {
       if (animStates.length) {
         if (cell) {
           document.getElementById(cellClass).className = cell.getClass();
@@ -93,11 +96,15 @@ function process() {
       else {
         clearInterval(interval);
         document.getElementById(cellClass).className = cell.getClass();
+
+        // Enable "solve" button
+        document.getElementById("solvebtn").disabled = false;
       }
     }, animationSpeed);
   }
   else {
     document.getElementById("mazeout").innerHTML = maze.toHTML();
+    document.getElementById("solvebtn").disabled = false;
   }
   
   // Set the grid's CSS properties
@@ -106,9 +113,76 @@ function process() {
 } // end Process
 
 
+// Handler for the solve button
+function solve() {
+  let userForm = document.forms["mazein"].elements;
+  animate = userForm["animate"].checked;
+  document.getElementById("solvebtn").disabled = true;
+  let soln;
+
+  clearPath(maze.getFlattened());
+
+  if (maze) {
+    maze.unvisit();
+    let dfs = new DFS();
+    soln = dfs.solve(maze.grid[0][0], maze.grid[maze.grid.length-1][maze.grid.length-1]);
+    maze.visit();
+  }
+
+  // Display maze, either as an animation or directly
+  if (animate) {
+    let cell;
+    let cellClass;
+    interval = setInterval(function () {
+      if (animStates.length) {
+        if (cell) {
+          document.getElementById(cellClass).className = cell.getClass();
+        }
+        cell = animStates.shift();
+        cellClass = "cell_" + cell.y + "_" + cell.x;
+        document.getElementById(cellClass).className = 
+          cell.getClass() + " gridactive";
+      }
+      else {
+        clearInterval(interval);
+        document.getElementById(cellClass).className = cell.getClass();
+        highlightPath(soln);
+        document.getElementById("solvebtn").disabled = false;
+      }
+    }, animationSpeed);
+  }
+  else {
+    highlightPath(soln);
+    document.getElementById("solvebtn").disabled = false;
+  }
+  
+  // Set the grid's CSS properties
+  $(".grid").css('width', grid + "px");
+  $(".grid").css('height', grid + "px");
+} // end solve
+
+
 // jQuery script to prevent forms from refreshing the page on submit
 $(document).ready(function() {
   $(function() {
     $("form").submit(function() { return false; });
   });
 });
+
+
+// Sets CSS highlighting for a path array of cells
+function highlightPath(path) {
+  path.forEach(function (cell) {
+    let cellClass = "cell_" + cell.y + "_" + cell.x;
+    document.getElementById(cellClass).className = cell.getClass() + " gridactive";
+  });
+} // end highlightPath
+
+
+// Removes CSS highlighting for a path array of cells
+function clearPath(path) {
+  path.forEach(function (cell) {
+    let cellClass = "cell_" + cell.y + "_" + cell.x;
+    document.getElementById(cellClass).className = cell.getClass();
+  });
+} // end clearPath

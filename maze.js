@@ -61,6 +61,28 @@ Maze.prototype.init = function () {
 }; // end init
 
 /**
+ * Unvisits all cells in the maze
+ */
+Maze.prototype.unvisit = function () {
+  for (let i = 0; i < this.grid.length; i++) {
+    for (let j = 0; j < this.grid[i].length; j++) {
+      this.grid[i][j].visited = false;
+    }
+  }
+}; // end unvisit
+
+/**
+ * Visits all cells in the maze
+ */
+Maze.prototype.visit = function () {
+  for (let i = 0; i < this.grid.length; i++) {
+    for (let j = 0; j < this.grid[i].length; j++) {
+      this.grid[i][j].visited = true;
+    }
+  }
+}; // end visit
+
+/**
  * Renders the maze as an HTML table
  */
 Maze.prototype.toHTML = function () {
