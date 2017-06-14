@@ -31,7 +31,7 @@ DFS.prototype.solve = function (start, end) {
       return path;
     }
 
-    let linked = cell.getLinkedRandNeighbors();
+    let linked = shuffle(cell.getLinkedNeighbors());
     let pop = true;
     for (let i = 0; i < linked.length && pop; i++) {
       if (linked[i] && !linked[i].visited) {
