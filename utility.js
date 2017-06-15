@@ -14,16 +14,16 @@ function shuffle(arr) {
 } // end shuffle
 
 
-// Randomly chooses an element from an array
+// Randomly returns an element in an array
 function sample(arr) {
   return arr[Math.random() * arr.length | 0];
 } // end sample
 
 
-// Randomly deletes an element from an array
+// Randomly deletes an element from an array and returns it
 function randPop(arr) {
   return arr.splice((Math.random() * arr.length) | 0, 1)[0];
-} // end sample
+} // end randPop 
 
 
 // Returns an array of keys in an object

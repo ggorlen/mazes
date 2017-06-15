@@ -105,7 +105,7 @@ Cell.prototype.link = function (otherCell) {
  */ 
 Cell.prototype.getRandNeighbors = function () {
   return shuffle(values(this.neighbors));
-}; // end getRandNeighbor
+}; // end getRandNeighbors
 
 /**
  * Returns an array of linked neighbors or undefined if no neighbors
@@ -113,14 +113,14 @@ Cell.prototype.getRandNeighbors = function () {
  */ 
 Cell.prototype.getLinkedNeighbors = function () {
   let dirs = keys(this.neighbors);
-  let linkedRandNeighbors = [];
+  let linkedNeighbors = [];
   for (let i = 0; i < dirs.length; i++) { 
     if (this.links[dirs[i]]) {
-      linkedRandNeighbors.push(this.neighbors[dirs[i]]);
+      linkedNeighbors.push(this.neighbors[dirs[i]]);
     }
   }
-  return linkedRandNeighbors;
-}; // end getLinkedRandNeighbors
+  return linkedNeighbors;
+}; // end getLinkedNeighbors
 
 /**
  * Creates a copy of this cell

@@ -115,10 +115,10 @@ function generate() {
 
 // Handler for the solve button
 function solve() {
+  let soln;
   let userForm = document.forms["mazein"].elements;
   animate = userForm["animate"].checked;
   document.getElementById("solvebtn").disabled = true;
-  let soln;
 
   clearPath(maze.getFlattened());
 
@@ -147,13 +147,11 @@ function solve() {
         clearInterval(interval);
         document.getElementById(cellClass).className = cell.getClass();
         highlightPath(soln);
-        document.getElementById("solvebtn").disabled = false;
       }
     }, animationSpeed);
   }
   else {
     highlightPath(soln);
-    document.getElementById("solvebtn").disabled = false;
   }
   
   // Set the grid's CSS properties
