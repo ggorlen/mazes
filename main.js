@@ -24,8 +24,8 @@ let width;
 let height;
 let animate;
 let animationSpeed;
-let maze;
 let animStates;
+let maze;
 let interval;
 
 // Processes the user's form submission to generate a maze
@@ -117,6 +117,7 @@ function generate() {
 function solve() {
   let soln;
   let userForm = document.forms["mazein"].elements;
+  animStates = [];
   animate = userForm["animate"].checked;
   document.getElementById("solvebtn").disabled = true;
 
@@ -130,7 +131,7 @@ function solve() {
   }
 
   // Display maze, either as an animation or directly
-  if (animate) {
+  if (animate && animStates.length) {
     let cell;
     let cellClass;
     interval = setInterval(function () {
@@ -147,25 +148,19 @@ function solve() {
         clearInterval(interval);
         document.getElementById(cellClass).className = cell.getClass();
         highlightPath(soln);
+        document.getElementById("solvebtn").disabled = false;
       }
     }, animationSpeed);
   }
   else {
     highlightPath(soln);
+    document.getElementById("solvebtn").disabled = false;
   }
   
   // Set the grid's CSS properties
   $(".grid").css('width', grid + "px");
   $(".grid").css('height', grid + "px");
 } // end solve
-
-
-// jQuery script to prevent forms from refreshing the page on submit
-$(document).ready(function() {
-  $(function() {
-    $("form").submit(function() { return false; });
-  });
-});
 
 
 // Sets CSS highlighting for a path array of cells
@@ -184,3 +179,11 @@ function clearPath(path) {
     document.getElementById(cellClass).className = cell.getClass();
   });
 } // end clearPath
+
+
+// jQuery script to prevent forms from refreshing the page on submit
+$(document).ready(function () {
+  $(function () {
+    $("form").submit(function () { return false; });
+  });
+});
