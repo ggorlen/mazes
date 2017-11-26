@@ -12,6 +12,8 @@ DFS = function () {};
  *               or false if no path was found
  */
 DFS.prototype.solve = function (start, end) {
+  const animStates = [];
+
   let parents = {};
   let stack = [];
   stack.push(start);
@@ -23,12 +25,14 @@ DFS.prototype.solve = function (start, end) {
 
     if (cell === end) {
       let path = [];
+
       while (cell !== start) {
         path.push(cell);
         cell = parents[cell.x + " " + cell.y];
       }
+
       path.push(cell);
-      return path;
+      return { path: path, animation: animStates };
     }
 
     let linked = shuffle(cell.getLinkedNeighbors());
@@ -40,7 +44,9 @@ DFS.prototype.solve = function (start, end) {
         pop = false;
       }
     }
-    if (pop) stack.pop();
+
+    if (pop) { stack.pop(); }
   }
+
   return false;
 }; // end solve

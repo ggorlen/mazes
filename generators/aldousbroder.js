@@ -10,10 +10,10 @@
  * current cell and continue inspecting its neighbors until all cells
  * are in the maze.
  */
-let AldousBroder = function () {};
+const AldousBroder = function () {};
 
-AldousBroder.prototype.carve = function (maze) {
-  let grid = maze.getFlattened(); 
+AldousBroder.prototype.carve = function (maze, animStates) {
+  const grid = maze.getFlattened(); 
   let cellsLeft = grid.length;
 
   // Randomly select an unvisited cell from the grid and mark it part of the maze
@@ -22,22 +22,26 @@ AldousBroder.prototype.carve = function (maze) {
   cellsLeft--;
   
   // Add this cell to the animation queue
-  animStates.push(cell);
+  if (animStates) { animStates.push(cell); }
 
   // Keep going while there are unvisited cells
   while (cellsLeft) {
 
     // Pick a random neighbor--if it's unvisited, add it
     // to the maze, else make it the current cell
-    let randNeighbor = cell.getRandNeighbors()[0];
+    const randNeighbor = cell.getRandNeighbors()[0];
+
     if (!randNeighbor.visited) {
       cell.link(randNeighbor);
       randNeighbor.visited = true;
       cellsLeft--;
     }
+
     cell = randNeighbor;
     
     // Add this cell to the animation queue
-    animStates.push(cell);
+    if (animStates) { animStates.push(cell); }
   }
+
+  return animStates;
 }; // end carve

@@ -1,13 +1,14 @@
 "use strict";
 
+
 /** 
  * Represents a maze cell
  */
-let Cell = function (x, y) {
+const Cell = function (x, y) {
   this.x = x;
   this.y = y;
   this.neighbors = {};
-  this.links = { 'n': false, 's': false, 'e': false, 'w': false };
+  this.links = { n: false, s: false, e: false, w: false };
   this.visited = false;
 }; // end Cell class
   
@@ -27,11 +28,11 @@ Cell.prototype.toHTML = function () {
  */
 Cell.prototype.getClass = function () {
   let output = "grid";
-  if (this.links.n) output += " n";
-  if (this.links.s) output += " s";
-  if (this.links.e) output += " e";
-  if (this.links.w) output += " w";
-  if (!this.visited) output += " gridunvisited";
+  if (this.links.n) { output += " n"; }
+  if (this.links.s) { output += " s"; }
+  if (this.links.e) { output += " e"; }
+  if (this.links.w) { output += " w"; } 
+  if (!this.visited) { output += " gridunvisited"; }
   return output;
 }; // end getClass
   
@@ -64,16 +65,21 @@ Cell.prototype.draw = function (ctx, grid) {
  * @param maze the maze this cell is a member of
  */
 Cell.prototype.setNeighbors = function (maze) {        
-  let dirs = { 'n': [-1, 0], 's': [1, 0], 'e': [0, 1], 'w': [0, -1] };
-  for (let dir in dirs) { 
-    if (this.y + dirs[dir][0] >= 0 &&
-        this.x + dirs[dir][1] >= 0 &&
-        this.y + dirs[dir][0] < maze.height &&
-        this.x + dirs[dir][1] < maze.width) {
-      this.neighbors[dir] = maze.grid[this.y + dirs[dir][0]]
-                                     [this.x + dirs[dir][1]];
+  const dirs = { 
+    w: {x: -1, y: 0}, 
+    e: {x: 1, y: 0}, 
+    s: {x: 0, y: 1}, 
+    n: {x: 0, y: -1}
+  };
+
+  keys(dirs).forEach(function (e) { 
+    if (this.y + dirs[e].y >= 0 &&
+        this.x + dirs[e].x >= 0 &&
+        this.y + dirs[e].y < maze.height &&
+        this.x + dirs[e].x < maze.width) {
+      this.neighbors[e] = maze.grid[this.y + dirs[e].y][this.x + dirs[e].x];
     }
-  }
+  }.bind(this));
 }; // end setNeighbors
 
 /**
@@ -81,23 +87,50 @@ Cell.prototype.setNeighbors = function (maze) {
  * @param otherCell the cell to link to this
  */
 Cell.prototype.link = function (otherCell) {
+  if (!otherCell) { return false; }
 
   // Set this cell's link
-  for (let neighbor in this.neighbors) {
-    if (this.neighbors[neighbor] === otherCell) {
-      this.links[neighbor] = true;
+  for (const dir in this.neighbors) {
+    if (this.neighbors[dir] === otherCell) {
+      this.links[dir] = true;
 
       // Set the other cell's link
-      for (let neighbor in otherCell.neighbors) {
-        if (this === otherCell.neighbors[neighbor]) {
-          otherCell.links[neighbor] = true;
+      for (const otherDir in otherCell.neighbors) {
+        if (this === otherCell.neighbors[otherDir]) {
+          otherCell.links[otherDir] = true;
           return true;
         }
       }
     }
   }
+
   return false;
 }; // end link
+
+/**
+ * Unlinks this and parameter cell
+ * @param otherCell the cell to unlink
+ */
+Cell.prototype.unlink = function (otherCell) {
+  if (!otherCell) { return false; }
+
+  // Set this cell's link
+  for (const dir in this.neighbors) {
+    if (this.neighbors[dir] === otherCell) {
+      this.links[dir] = false;
+
+      // Set the other cell's link
+      for (const otherDir in otherCell.neighbors) {
+        if (this === otherCell.neighbors[otherDir]) {
+          otherCell.links[otherDir] = false;
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}; // end unlink
 
 /**
  * Returns an array of random neighbors or undefined if no neighbors
@@ -112,13 +145,15 @@ Cell.prototype.getRandNeighbors = function () {
  * @return array of linked neighbors
  */ 
 Cell.prototype.getLinkedNeighbors = function () {
-  let dirs = keys(this.neighbors);
-  let linkedNeighbors = [];
+  const dirs = keys(this.neighbors);
+  const linkedNeighbors = [];
+
   for (let i = 0; i < dirs.length; i++) { 
     if (this.links[dirs[i]]) {
       linkedNeighbors.push(this.neighbors[dirs[i]]);
     }
   }
+
   return linkedNeighbors;
 }; // end getLinkedNeighbors
 
@@ -127,15 +162,17 @@ Cell.prototype.getLinkedNeighbors = function () {
  * @return the copy cell
  */
 Cell.prototype.clone = function () {
-  let cell = new Cell(); 
+  const cell = new Cell(); 
   cell.x = this.x;
   cell.y = this.y;
 
   // Avoid circular references in copy of neighbors object
   cell.neighbors = {};
-  for (let direction in this.neighbors) {
+
+  for (const direction in this.neighbors) {
     cell.neighbors[direction] = this.neighbors[direction]; 
   }
+
   cell.links = JSON.parse(JSON.stringify(this.links));
   cell.visited = this.visited;
   return cell;

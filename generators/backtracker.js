@@ -5,31 +5,32 @@
  *
  * Carves a maze depth-first, creating long, winding passages
  */
-let Backtracker = function () {};
+const Backtracker = function () {};
 
-Backtracker.prototype.carve = function (maze) {
+Backtracker.prototype.carve = function (maze, animStates) {
     
   // Start at a random cell
-  let stack = [maze.grid[Math.floor(Math.random() * maze.grid.length)]
-                        [Math.floor(Math.random() * maze.grid[0].length)]];
+  const stack = [maze.grid[Math.floor(Math.random() * maze.grid.length)]
+                          [Math.floor(Math.random() * maze.grid[0].length)]];
   
   // Iterate as long as there are items left in the stack to examine
   while (stack.length) {
   
     // Make the top of the stack the current cell
-    let cell = stack[stack.length - 1];
+    const cell = stack[stack.length-1];
     
     // Add this cell to the animation queue
-    animStates.push(cell);
+    if (animStates) { animStates.push(cell); }
   
     // Mark this cell visited
     cell.visited = true;
     
     // Get this cell's neighbors in random order
-    let randNeighbors = cell.getRandNeighbors();
+    const randNeighbors = cell.getRandNeighbors();
 
     // Find an unvisited neighbor--assume we'll pop the stack at the end
     let pop = true;
+
     for (let i = 0; i < randNeighbors.length && pop; i++) {
 
       // Ensure candidate cell to link to is unvisited
@@ -47,6 +48,8 @@ Backtracker.prototype.carve = function (maze) {
     }
     
     // No valid neighbors were found, pop the stack
-    if (pop) stack.pop();
+    if (pop) { stack.pop(); }
   }
+
+  return animStates;
 }; // end carve

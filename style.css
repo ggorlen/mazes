@@ -1,13 +1,16 @@
-body {
+* {
   font-family: monospace;
-  width: 97%;
-  margin: 15px;
+}
+
+body {
+  margin: 1em;
 }
 
 #mazeout table {
   table-layout: fixed;
+  border-collapse: collapse;
   width: 1px;
-  padding: 1px;
+  padding: 0;
 }
 
 #mazeout td {
@@ -15,19 +18,19 @@ body {
 }
 
 #mazeout td.n {
-  border-top: 0px solid #fff;
+  border-top: 1px solid transparent;
 }
 
 #mazeout td.s {
-  border-bottom: 0px solid #fff;
+  border-bottom: 0px solid transparent;
 }
 
 #mazeout td.e {
-  border-right: 0px solid #fff;
+  border-right: 0px solid transparent;
 }
 
 #mazeout td.w {
-  border-left: 0px solid #fff;
+  border-left: 1px solid transparent;
 }
 
 #mazecanvas canvas {

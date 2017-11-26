@@ -8,21 +8,23 @@
  * randomly connecting one cell from the run to the south
  * and starting a new run until all cells are visited.
  */
-let Sidewinder = function () {};
+const Sidewinder = function () {};
 
-Sidewinder.prototype.carve = function (maze) {
-  let grid = maze.getFlattened(); 
+Sidewinder.prototype.carve = function (maze, animStates) {
+  const grid = maze.getFlattened(); 
   let run = 0;
+
   for (let i = 0; i < grid.length; i++) {
 
     // Add this frame to the animation queue
-    animStates.push(grid[i]);
+    if (animStates) { animStates.push(grid[i]); }
 
     // Flip a coin and check if an eastern neighbor exists for this cell
     if (Math.random() >= 0.5 || !grid[i].neighbors.e) {
 
       // End the run and pick a random cell from the run to connect south
-      let randomCell = i - (Math.random() * run | 0);
+      const randomCell = i - (Math.random() * run | 0);
+
       if (grid[randomCell].neighbors.s) {
         grid[i].visited = true;
         grid[randomCell].link(grid[randomCell].neighbors.s);
@@ -38,4 +40,6 @@ Sidewinder.prototype.carve = function (maze) {
       run++;
     }
   }
+
+  return animStates;
 }; // end carve

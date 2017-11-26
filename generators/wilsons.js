@@ -10,46 +10,47 @@
  * at which point the path is added to the maze and another non-maze cell is 
  * selected at random.
  */
-let Wilsons = function () {};
+const Wilsons = function () {};
 
-Wilsons.prototype.carve = function (maze) {
-  let grid = maze.getFlattened(); 
+Wilsons.prototype.carve = function (maze, animStates) {
+  const grid = maze.getFlattened(); 
 
   // Randomly select an unvisited cell from the grid and mark it part of the maze
   let cell = randPop(grid);
   cell.visited = true;
   
   // Add this cell to the animation queue
-  animStates.push(cell);
+  if (animStates) { animStates.push(cell.clone()); }
 
   // Keep going while there are unvisited cells
   while (grid.length) {
 
     // Pick a random cell not yet in the maze and begin new path
     cell = randPop(grid);
-    let path = [cell];
+    const path = [cell];
 
     // Perform a loop-erased random walk until a cell in the maze is encountered
     let walking = true;
+
     while (walking) {
     
       // Add this cell to the animation queue
-      animStates.push(cell.clone());
+      if (animStates) { animStates.push(cell.clone()); }
 
-      let randNeighbor = cell.getRandNeighbors()[0];
+      const randNeighbor = cell.getRandNeighbors()[0];
+
       if (!randNeighbor.visited) {
 
         // Eliminate loops in the path if necessary
-        let idx = path.indexOf(randNeighbor);
-        if (idx >= 0) path.splice(idx);
-
-        path.push(randNeighbor);
+        const idx = path.indexOf(randNeighbor);
+        if (idx >= 0) { path.splice(idx); }
         cell = randNeighbor;
       }
       else { // This neighbor is part of the maze; end the walk
-        path.push(randNeighbor);
         walking = false;
       }
+
+      path.push(randNeighbor);
     }
 
     // Add path to maze, linking cells, marking them visited, 
@@ -59,11 +60,13 @@ Wilsons.prototype.carve = function (maze) {
         path[i].link(path[i+1]);
       }
       path[i].visited = true;
-      let idx = grid.indexOf(path[i]);
-      if (idx >= 0) grid.splice(idx, 1);
+      const idx = grid.indexOf(path[i]);
+      if (idx >= 0) { grid.splice(idx, 1); }
     
       // Add this cell to the animation queue
-      animStates.push(path[i]);
+      if (animStates) { animStates.push(path[i]); }
     }
   }
+
+  return animStates;
 }; // end carve

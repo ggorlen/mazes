@@ -12,10 +12,10 @@
  *
  * Optimization: memorize the row with unvisited cells
  */
-let HuntAndKill = function ()  {};
+const HuntAndKill = function () {};
 
-HuntAndKill.prototype.carve = function (maze) {
-  let grid = maze.getFlattened();
+HuntAndKill.prototype.carve = function (maze, animStates) {
+  const grid = maze.getFlattened();
   let cell = sample(grid);
   let killing = true;
 
@@ -23,11 +23,12 @@ HuntAndKill.prototype.carve = function (maze) {
   while (killing) {
 
     // Add frame to animation queue
-    animStates.push(cell);
+    if (animStates) { animStates.push(cell); }
 
     // Link with a random neighbor if possible
     cell.visited = true;
-    let randNeighbors = cell.getRandNeighbors();
+    const randNeighbors = cell.getRandNeighbors();
+
     for (let i = 0; i < randNeighbors.length; i++) {
       if (!randNeighbors[i].visited) {
         cell.link(randNeighbors[i]);
@@ -46,7 +47,7 @@ HuntAndKill.prototype.carve = function (maze) {
       for (let i = 0; i < grid.length && !killing; i++) {
         
         // Add frame to animation queue
-        animStates.push(grid[i].clone());
+        if (animStates) { animStates.push(grid[i].clone()); }
 
         if (!grid[i].visited) {
 
@@ -66,4 +67,6 @@ HuntAndKill.prototype.carve = function (maze) {
       }
     }
   }
+
+  return animStates;
 }; // end carve
